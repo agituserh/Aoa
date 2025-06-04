@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for("static",filename="css/index.css") }}">
+{% endblock %}
+{% block title %}
+    首页
+{% endblock %}
+{% block body %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class=flashes>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    <div class="row" style="margin-top: 20px;">
+        <div class="col"></div>
+        <div class="col-10">
+            <ul class="question-ul">
+                {% for question in pagination.items %}
+                    <li>
+                        <div class="side-question">
+                            <img class="side-question-avatar" src="{{ url_for("static",filename="images/avatar.jpg") }}"
+                                 alt="">
+                        </div>
+                        <div class="question-main">
+                            <div class="question-title"><a
+                                    href="{{ url_for("qa.qa_detail",qa_id=question.id) }}">{{ question.title }}</a>
+{#                                #}
+
+
+                            </div>
+                            <div class="question-content">{{ question.content }}</div>
+                            <div class="question-detail">
+                                {% if question.author_id %}
+                                    <span class="question-author">{{ question.author_id }}</span>
+                                    {% else %}
+                                    <span class="question-author">账号已注销</span>
+                                {% endif %}
+
+                                <span class="question-time">{{ question.create_time }}</span>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            <div class="pagination">
+  {% if pagination.has_prev %}
+    <a href="{{ url_for('qa.index', page=pagination.prev_num) }}">上一页</a>
+  {% endif %}
+
+  {% for p in pagination.iter_pages() %}
+    {% if p %}
+      {% if p == pagination.page %}
+        <span class="current-page">{{ p }}</span>
+      {% else %}
+        <a href="{{ url_for('qa.index', page=p) }}">{{ p }}</a>
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+
+  {% if pagination.has_next %}
+    <a href="{{ url_for('qa.index', page=pagination.next_num) }}">下一页</a>
+  {% endif %}
+</div>
+            </ul>
+        </div>
+        <div class="col"></div>
+    </div>
+{% endblock %}
